@@ -10,4 +10,11 @@
 | hermite interpolation*| `polynomial P( {t0,t0,t0,t1}, {y0,dy0,ddy0,y1} )`     |
 
 * * planned
+
+### plans
+* add default template parameters `<double, double>`
+* hermite interpolation
+* calclate derivative as polynomial object
+* add polynomials by overloading +?
+* add spline class which stores all divided differences for dynamic order interpolation
  
