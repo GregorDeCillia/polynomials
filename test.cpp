@@ -59,7 +59,7 @@ int main(){
 	vector<time_type> t2 = t;
 	for ( int i = 1; i < t.size(); i++ )
 		t2[i] = t[i] * t[i] - t[i];
-	polynomial<double,double> P2(t,t2);
+	polynomial<> P2(t,t2);
 	std::cout << P2.deriv( 100.0, 1 ) << std::endl;
 	P2.print();
 }

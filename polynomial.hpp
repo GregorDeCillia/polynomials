@@ -10,7 +10,7 @@ typedef double value_type;					///< define accuracy of values
 //typedef value_type time_type;				///< define the accuracy of the time
 //typedef vector<value_type> state_type;		///< typically on the bodyvalue_tpye
 
-template<class state_type = vector<value_type>, class time_type = value_type>
+template<class state_type = value_type, class time_type = value_type>
 /// polynomials to interpolate functions \f$ f: R\rightarrow R^n\f$
 /**
  * 

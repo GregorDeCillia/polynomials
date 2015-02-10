@@ -2,3 +2,5 @@ html
 latex
 simulation.dat
 *.out
+*.tmp
+*.o
