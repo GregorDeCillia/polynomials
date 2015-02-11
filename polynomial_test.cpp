@@ -2,6 +2,7 @@
 #define BOOST_TEST_MODULE polynomial_class_test
 
 #include <boost/test/unit_test.hpp>
+#include <boost/assign/std/vector.hpp>
 #include <iostream>
 
 #include "polynomial.hpp"
@@ -119,10 +120,19 @@ BOOST_AUTO_TEST_CASE( test_deriv_poly )
 	}
 	// check different construction for the second derivative
 	{
-		polynomial<> R = ((P[1])[0])[1];
+		polynomial<> R = P[1][0][1];
 		for ( int i = 0; i < t.size(); i++ )
 			BOOST_CHECK_CLOSE( R( t[i] ), 8.0, tolerance );
 	}
+}
+
+BOOST_AUTO_TEST_CASE( test_hermite_interpolation )
+{
+	vector<double> t2( 5 );
+	t2[0] = 2.3; t2[1] = 14.53; t2[2] = 13,14; t2[3]= 91.12; t2[4] = -154.1;
+	polynomial<> P( 0*t2, t2 );
+	for ( int i = 0; i < t2.size(); i++ )
+		BOOST_CHECK_CLOSE( P.deriv( 0.0, i ), t2[i], tolerance );
 }
 
 

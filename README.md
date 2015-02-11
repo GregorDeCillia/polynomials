@@ -7,9 +7,7 @@
 | differentiation       | `y =  P.deriv( time, order )`                           |
 | rootfinding           | `t =  P.findroot( rootfn, tlower, tupper )`             |
 | differentiation       | `polynomial deriv =  P[order]`                          |
-| hermite interpolation*| `polynomial P( {t0,t0,t0,t1}, {y0,dy0,ddy0,y1} )`       |
-
-* * planned
+| hermite interpolation | `polynomial P( {t0,t0,t0,t1}, {y0,dy0,ddy0,y1} )`       |
 
 ### plans
 * hermite interpolation

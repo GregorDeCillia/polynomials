@@ -70,12 +70,37 @@ class polynomial{
 	 * This is used by using the [divided differences formula](https://en.wikipedia.org/wiki/Divided_differences)
 	 */
 	void calculate_newton_coefficients(){
-		newton_coefficients_ = x_;
-		for ( int i = 0; i < degree_ + 1; i++ )
+		newton_coefficients_.resize( degree_ + 1 );
+		newton_coefficients_[0] = x_[0];
+		for ( int i = 1; i < degree_ + 1; i++ ){
+			if ( t_[i] != t_[i-1] )
+				newton_coefficients_[i] = x_[i];
+			else{
+				int k = i-1;
+				while ( k > 0 && t_[k-1] == t_[i] ){
+					k--;
+				}
+				// k is now the smallest index for which t[k] = t[i]
+				newton_coefficients_[i] = x_[k];
+			}
+		}
+		time_type factorial = 1;
+		for ( int i = 0; i < degree_ + 1; i++ ){
+			factorial *= i+1.0;
 			for ( int j = degree_; j > i; j-- )
-				newton_coefficients_[j] = ( newton_coefficients_[j] - 
-											newton_coefficients_[j-1] )
-					/( t_[j] - t_[j-1-i] );
+				if ( t_[j] != t_[j-1-i] )
+					newton_coefficients_[j] = ( newton_coefficients_[j] -
+												newton_coefficients_[j-1] )
+						/( t_[j] - t_[j-1-i] );
+				else{
+					int k = j-1-i;
+					while ( k > 0 && t_[k-1] == t_[j] ){
+						k--;
+					}
+					// k is now the smallest index for which t[k] = t[j]
+					newton_coefficients_[j] = x_[k+i+1]*1.0/factorial;
+				}
+		}
 	}
 
 	/// calculate the lagrange coefficients of the polynomias
