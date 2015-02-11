@@ -94,6 +94,15 @@ BOOST_AUTO_TEST_CASE( test_lagrange_evaluate )
 		BOOST_CHECK_CLOSE( P( t[i] ), P.lagrange_evaluate( t[i] ), tolerance );
 }
 
+BOOST_AUTO_TEST_CASE( test_standard_evaluate )
+{
+	// create polynomial P(t) = ???
+	polynomial<> P( {0, 1.3, 2.71}, {3.142, 4.745, 5.125 } );
+	// check whether the newton evaluation and the lagrange evaluation give the same result
+	for ( int i = 0; i < t.size(); i++ )
+		BOOST_CHECK_CLOSE( P( t[i] ), P.standard_evaluate( t[i] ), tolerance );
+}
+
 BOOST_AUTO_TEST_CASE( test_deriv_poly )
 {
 	// create P(t) = 4*t*t+6*t+3
@@ -114,7 +123,6 @@ BOOST_AUTO_TEST_CASE( test_deriv_poly )
 		for ( int i = 0; i < t.size(); i++ )
 			BOOST_CHECK_CLOSE( R( t[i] ), 8.0, tolerance );
 	}
-
 }
 
 

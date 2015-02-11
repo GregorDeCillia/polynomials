@@ -52,6 +52,7 @@ class polynomial{
 	int degree_;									///< the degree
 	vector<state_type> newton_coefficients_;		///< newtons coefficients
 	vector<value_type> lagrange_coefficients_;		///< lagranges coefficients
+	vector<value_type> standard_coefficients_;		///< standard coefficients
 
 	/// Prevent calling the default constructor
 	polynomial(){};
@@ -107,6 +108,17 @@ class polynomial{
 		}
 		return x;
 	}
+
+	/// calculates the coefficients a0, a1,a2 for P(t) = a0+a1t+a2t*t+...
+	void calculate_standard_coefficients(){
+		vector<state_type> derivatives = derivs( 0.0, degree_ );
+		standard_coefficients_.resize( degree_ + 1 );
+		for ( int i = 0; i < degree_ + 1; i++ ){
+			standard_coefficients_[i] = derivatives[i];
+			derivatives = derivatives*1/( i + 1 );
+		}
+	}
+
 
 public:
 	/// Constructor using vectors of evaluation points
@@ -236,7 +248,7 @@ public:
 	 * \f}
 	 * Fore more information, read [these lecture notes](http://pages.cs.wisc.edu/~amos/412/lecture-notes/lecture08.pdf)
 	 */
-	state_type deriv( time_type t, int i )
+	vector<state_type> derivs( time_type t, int i )
 	{
 		vector<state_type> out( i + 1 );
 		vector<state_type> out_bak = out;
@@ -250,7 +262,11 @@ public:
 				out[k] = k*out_bak[k-1] + ( t - t_[j] )*out[k];
 			}
 		}
-		return out[i];
+		return out;
+	}
+
+	state_type deriv( time_type t, int i ){
+		return derivs( t, i )[i];
 	}
 
 	/// finds the root of \f$fun( P( t ) )\f$ using the [secant method](https://en.wikipedia.org/wiki/Secant_method)
@@ -322,6 +338,16 @@ public:
 		}
 		polynomial P2( t2, x2 );
 		return P2;
+	}
+
+	state_type standard_evaluate( time_type t ){
+		calculate_standard_coefficients();
+		state_type sum = standard_coefficients_[ degree_ ];
+		for ( int i = 0; i < degree_; i++ ){
+			sum *= t;
+			sum += standard_coefficients_[ degree_ - 1 - i ];
+		}
+		return sum;
 	}
 
 
