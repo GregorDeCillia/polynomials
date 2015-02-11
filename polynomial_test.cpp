@@ -94,5 +94,28 @@ BOOST_AUTO_TEST_CASE( test_lagrange_evaluate )
 		BOOST_CHECK_CLOSE( P( t[i] ), P.lagrange_evaluate( t[i] ), tolerance );
 }
 
+BOOST_AUTO_TEST_CASE( test_deriv_poly )
+{
+	// create P(t) = 4*t*t+6*t+3
+	polynomial<> P( { -1, 0, 1 }, { 1, 3, 13 } );
+	polynomial<> Q = P[1];
+	// check whether Q(t) = 8*t + 6
+	for ( int i = 0; i < t.size(); i++ )
+		BOOST_CHECK_CLOSE( Q( t[i] ), 8*t[i] + 6, tolerance );
+	{
+		polynomial<> R = P[2];
+		// check whether R(t) = 8
+		for ( int i = 0; i < t.size(); i++ )
+			BOOST_CHECK_CLOSE( R( t[i] ), 8.0, tolerance );
+	}
+	// check different construction for the second derivative
+	{
+		polynomial<> R = ((P[1])[0])[1];
+		for ( int i = 0; i < t.size(); i++ )
+			BOOST_CHECK_CLOSE( R( t[i] ), 8.0, tolerance );
+	}
+
+}
+
 
 

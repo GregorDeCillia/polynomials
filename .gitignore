@@ -1,6 +1,6 @@
 html
 latex
-simulation.dat
-*.out
 *.tmp
+*.out
 *.o
+test

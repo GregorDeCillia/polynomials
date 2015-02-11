@@ -310,5 +310,19 @@ public:
 		std::cout << std::endl;
 	}
 
+	polynomial operator[]( int j ){
+		// can that be done more efficiently?
+		// currently this is an O(p*p) algorithm
+		int degree2 = degree_ - j;
+		vector<state_type> x2( degree2+1 );
+		vector<time_type> t2( degree2+1 );
+		for ( int i = 0; i < degree2+1; i++ ){
+			t2[i] = t_[i];
+			x2[i] = deriv( t_[i], j );
+		}
+		polynomial P2( t2, x2 );
+		return P2;
+	}
+
 
 };
