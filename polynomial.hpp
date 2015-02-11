@@ -167,14 +167,25 @@ public:
 	 * for later evaluation purposes.
 	 */
 	polynomial( vector<time_type> t, vector<state_type> x ):
-		t_( t ), 
-		x_( x ), 
+		t_( t ),
+		x_( x ),
 		degree_( t_.size() - 1 )
 	{
 		if ( t_.size() != x_.size() )
 			std::cout << "Error in constructor: dimensions mismatch" << std::endl;
 		calculate_newton_coefficients();
 	}
+
+	polynomial( time_type t, vector<state_type> x ):
+		t_( x.size() ),
+		x_( x ),
+		degree_( x_.size() - 1 )
+	{
+		for ( int i = 0; i < degree_ + 1; i++ )
+			t_[i] = t;
+		calculate_newton_coefficients();
+	}
+
 
 	/// Operator, which makes it possible to evaluate the polynomial as \f$P(t)\f$
 	/**
@@ -214,6 +225,15 @@ public:
 		degree_( x_.size() - 1 )
 	{
 		calculate_newton_coefficients();
+	}
+
+	polynomial( time_type t, std::initializer_list<state_type> statelist ) :
+		x_( make_unbounded_array( statelist ) ),
+		t_( statelist.size() ),
+		degree_( x_.size() - 1 )
+	{
+		for ( int i = 0; i < degree_ + 1; i++ )
+			t_[i] = t;
 	}
 
 
@@ -273,8 +293,10 @@ public:
 	 * \f}
 	 * Fore more information, read [these lecture notes](http://pages.cs.wisc.edu/~amos/412/lecture-notes/lecture08.pdf)
 	 */
-	vector<state_type> derivs( time_type t, int i )
+	vector<state_type> derivs( time_type t, int i = -1 )
 	{
+		if ( i == -1 )
+			i = degree_;
 		vector<state_type> out( i + 1 );
 		vector<state_type> out_bak = out;
 		for ( int j = 0; j < i + 1; j++ )
@@ -375,5 +397,17 @@ public:
 		return sum;
 	}
 
-
 };
+
+template <class state_type, class time_type>
+inline polynomial< state_type,
+				   time_type
+				   > operator+( polynomial<state_type,time_type> P1,
+								polynomial<state_type,time_type> P2 )
+{
+	vector<state_type> d1 = P1.derivs( 0 );
+	vector<state_type> d2 = P2.derivs( 0 );
+	d1.resize( fmax( d1.size(), d2.size() ) );
+	d2.resize( fmax( d1.size(), d2.size() ) );
+	return polynomial<state_type,time_type>( 0, d1+d2 );
+}
