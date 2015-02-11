@@ -47,6 +47,23 @@ BOOST_AUTO_TEST_CASE( test_evaluate )
 		BOOST_REQUIRE_CLOSE( P2( t[i] ), 4*t[i]*t[i]+6*t[i]+3, tolerance );
 }
 
+BOOST_AUTO_TEST_CASE( test_add_point )
+{
+	// create P(t) = t
+	polynomial<> P({0,1},{0,1});
+	// extend to P(t) = 2t - t*t
+	P.add_point( 2,0 );
+	BOOST_REQUIRE_CLOSE( P( 1 + 21 ), P( 1 - 21 ), tolerance );
+	BOOST_REQUIRE_CLOSE( P( 1 + 43 ), P( 1 - 43 ), tolerance );
+
+	// give additional condition P'(2)=1
+	P.add_point( 0, 1 );
+	BOOST_REQUIRE_CLOSE( P.deriv( 0.0, 1 ), 1, tolerance );
+	BOOST_REQUIRE_CLOSE( P( 1 ), 1, tolerance );
+	BOOST_REQUIRE_CLOSE( P( 2 ), 0, tolerance );
+	BOOST_REQUIRE_CLOSE( P( 0 ), 0, tolerance );
+}
+
 BOOST_AUTO_TEST_CASE( test_deriv ) 
 {
 	// create P(t) = t*t

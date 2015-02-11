@@ -244,11 +244,12 @@ public:
 	 * the degree and the *newton coeficcients* get updated. the coefficent
 	 * update is of complexicity \f$O(p)\f$
 	 *
+	 * In case one wants to add a derivative, then that requires t_new = t_[0]
+	 * otherwise, there will be an index error
+	 *
 	 */
 	/// add an evaluation to the polynomial. this increases the degree
 	void add_point( time_type t, state_type x ){
-		if ( x.size() != x_[0].size() )
-			std::cout << "Error in add_point: dimensions mismatch" << std::endl;
 		// push back t and x
 		degree_ ++;
 		x_.resize( degree_ + 1 );
@@ -259,10 +260,24 @@ public:
 		// get new coefficient
 		newton_coefficients_.resize( degree_ + 1 );
 		newton_coefficients_( degree_ ) = x;
-		for ( int i = 0; i < degree_ ; i++ )
-			newton_coefficients_[ degree_ ] = 
-				( newton_coefficients_[ degree_ ] - newton_coefficients_[i] )/
-				( t_[ degree_ ] - t_[i] );
+		int factorial = 1;
+		for ( int i = 0; i < degree_ ; i++ ){
+			factorial *= 1.0+i;
+			if ( t_[ degree_ ] != t_[i] )
+				newton_coefficients_[ degree_ ] =
+					( newton_coefficients_[ degree_ ] - newton_coefficients_[i] )/
+					( t_[ degree_ ] - t_[i] );
+			else{
+				int k = i;
+				while( k > 0 && t_[k-1] == t_[ degree_ ] )
+					k--;
+				if ( k != 0 )
+					std::cout << "add point for derivatives is not supported "
+							  << "for that usecase: tnew != t_[0]";
+				std::cout << k << i << degree_ << std::endl;
+				newton_coefficients_[ degree_ ] = x_[k+i+1]*1.0/factorial;
+			}
+		}
 	}
 
 	/// alternative evaluation function using the lagrange basis
