@@ -234,6 +234,7 @@ public:
 	{
 		for ( int i = 0; i < degree_ + 1; i++ )
 			t_[i] = t;
+		calculate_newton_coefficients();
 	}
 
 
