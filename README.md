@@ -17,3 +17,4 @@
 * add spline class which stores all divided differences for dynamic order interpolation
 * set default the identical function for `rootfn` if `state_type` can be compared to `0`. this way, a root
   of the polynomial is found
+* integration
