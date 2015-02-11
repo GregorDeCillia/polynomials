@@ -30,22 +30,6 @@ unbounded_array<T> make_unbounded_array(std::initializer_list<T> list) {
 
 template<class state_type = value_type, class time_type = value_type>
 /// polynomials to interpolate functions \f$ f: R\rightarrow R^n\f$
-/**
- * 
- * this class gives you
- * 
- * | Feature               | syntax                                                | 
- * |---------------------- | ----------------------------------------------------- | 
- * | construction          | `polynomial P( {t0,t1,t2,...,tp}, {y0,y1,y2,...,yp} )`|
- * | evaluation            | `y =  P( time )`                                      |
- * | differentiation       | `y =  P.deriv( time, oder )`                          |
- * | rootfinding           | `t =  P.findroot( rootfn, tlower, tupper )`           |
- * | differentiation*      | `polynomial deriv =  P[order]`*                       |
- * | hermite interpolation*| `polynomial P( {t0,t0,t0,t1}, {y0,dy0,ddy0,y1} )`     |
- *
- * * * planned 
- * 
- */
 class polynomial{
 	vector<time_type> t_;							///< the times of evaluation
 	vector<state_type> x_;							///< the values of evaluation
@@ -176,6 +160,7 @@ public:
 		calculate_newton_coefficients();
 	}
 
+	/// constructor assuming all time values are the same ( hermite interpolation )
 	polynomial( time_type t, vector<state_type> x ):
 		t_( x.size() ),
 		x_( x ),
@@ -227,6 +212,7 @@ public:
 		calculate_newton_coefficients();
 	}
 
+	/// constructor assuming all time values are the same ( hermite interpolation )
 	polynomial( time_type t, std::initializer_list<state_type> statelist ) :
 		x_( make_unbounded_array( statelist ) ),
 		t_( statelist.size() ),
@@ -244,7 +230,7 @@ public:
 	 * the degree and the *newton coeficcients* get updated. the coefficent
 	 * update is of complexicity \f$O(p)\f$
 	 *
-	 * In case one wants to add a derivative, then that requires t_new = t_[0]
+	 * In case one wants to add a derivative, then that requires \f$t_{new} = t_0\f$
 	 * otherwise, there will be an index error
 	 *
 	 */
@@ -274,7 +260,6 @@ public:
 				if ( k != 0 )
 					std::cout << "add point for derivatives is not supported "
 							  << "for that usecase: tnew != t_[0]";
-				std::cout << k << i << degree_ << std::endl;
 				newton_coefficients_[ degree_ ] = x_[k+i+1]*1.0/factorial;
 			}
 		}
@@ -298,7 +283,7 @@ public:
 		return x;
 	}
 
-	/// calculates the \f$i\f$-th derivtive \f$P^{(i)}(t)\f$ of \f$P\f$ at \f$t\f$ in \f$O(ip)\f$ operations
+	/// calculates the first \f$i\f$-th derivtives \f$P(i),P'(i),...,P^{(i)}(t)\f$ of \f$P\f$ at \f$t\f$ in \f$O(ip)\f$ operations
 	/**
 	 * the calculation is based on the following recursive formula.
 	 * \f{eqnarray*}{
@@ -327,7 +312,7 @@ public:
 		}
 		return out;
 	}
-
+	/// calcuates the \f$i\f$-th derivtive \f$P^{(i)}(t)\f$ of \f$P\f$ at \f$t\f$. Baed on `derivs()`
 	state_type deriv( time_type t, int i ){
 		return derivs( t, i )[i];
 	}
@@ -389,6 +374,7 @@ public:
 		std::cout << std::endl;
 	}
 
+	/// calculates the \f$j\f$-th derivative \f$ P^{(j)}(t)\f$
 	polynomial operator[]( int j ){
 		// can that be done more efficiently?
 		// currently this is an O(p*p) algorithm
@@ -403,6 +389,7 @@ public:
 		return P2;
 	}
 
+	/// evaluate the polynomial using the standard basis \f$(1,t,t^2,...)\f$
 	state_type standard_evaluate( time_type t ){
 		calculate_standard_coefficients();
 		state_type sum = standard_coefficients_[ degree_ ];
@@ -413,6 +400,7 @@ public:
 		return sum;
 	}
 
+	/// clculates the integral \f$ \int_{t_0}^{t_1} P(t)~ \mathrm{d}t  \f$
 	state_type integrate( time_type t0, time_type t1 )
 	{
 		vector<state_type> d1 = derivs( 0 );
