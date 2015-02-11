@@ -6,8 +6,13 @@
 | evaluation            | `y =  P( time )`                                        |
 | differentiation       | `y =  P.deriv( time, order )`                           |
 | rootfinding           | `t =  P.findroot( rootfn, tlower, tupper )`             |
-| differentiation       | `polynomial deriv =  P[order]`                          |
-| hermite interpolation | `polynomial P( {t0,t0,t0,t1}, {y0,dy0,ddy0,y1} )`       |
+| differentiation       | `polynomial<> deriv =  P[order]`                        |
+| hermite interpolation | `polynomial<> P( {t0,t0,t0,t1}, {y0,dy0,ddy0,y1} )`     |
+| integration           | `P.integrate( t0, t1 )`                                 |
+| addition/substraction | `polynomial<> sum = P1 + P2`                            |
+| adding points*        | `P.add_pint( tnew, ynew )`                              |
+
+* * limited support for adding derivatives ( that is tnew already exists in t_ )
 
 ### plans
 * automatic sorting of input, so `t_[0] <= t_[1] <= ... <= t_[p]`
