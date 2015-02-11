@@ -10,6 +10,24 @@ typedef double value_type;					///< define accuracy of values
 //typedef value_type time_type;				///< define the accuracy of the time
 //typedef vector<value_type> state_type;		///< typically on the bodyvalue_tpye
 
+
+
+
+template <class T>
+unbounded_array<T> make_unbounded_array(std::initializer_list<T> list) {
+    unbounded_array<T> result(list.size());
+    for(unsigned i = 0; i < list.size(); ++ i)
+        result[i] = *(list.begin() + i);
+    return result;
+}
+
+
+
+
+
+
+
+
 template<class state_type = value_type, class time_type = value_type>
 /// polynomials to interpolate functions \f$ f: R\rightarrow R^n\f$
 /**
@@ -150,6 +168,18 @@ public:
 		}
 		calculate_newton_coefficients();
 	}
+
+	/// third constructor of the form P( {t0,t1,t2,..}, {x0,x1,x2,...} )
+	polynomial( std::initializer_list<time_type> timelist,
+				std::initializer_list<state_type> statelist ):
+		x_( make_unbounded_array( statelist ) ),
+		t_( make_unbounded_array( timelist ) ),
+		degree_( x_.size() - 1 )
+	{
+		calculate_newton_coefficients();
+	}
+
+
 	/**
 	 *
 	 * add a new point \f$(t,x)\f$ to the polynomial. This increases
@@ -186,7 +216,7 @@ public:
 	 * The "coefficients" \f$ l_j := L_j(t) \f$ are calculated and then used 
 	 * in the above equation. This is numerically not a good method
 	 */
-	state_type lagrangeEvaluate( time_type t )
+	state_type lagrange_evaluate( time_type t )
 	{
 		calculate_lagrange_coefficients( t );
 		state_type x = x_[0]*lagrange_coefficients_[0];
@@ -235,17 +265,16 @@ public:
 	{
 		value_type ylow = (*fun)( evaluate(tlower) );
 		value_type yup  = (*fun)( evaluate(tupper) );
-		std::cout << ylow << " " << yup << std::endl;
 		if ( ylow == 0 ) return tlower;
 		else if ( yup == 0 ) return tupper;
 		else if ( ylow*yup > 0 ){
 			std::cout << "error: no root in the interval" << std::endl;
 			return 0;
 		}
-		if ( tlower > tupper ){
+		if ( ylow > yup ){
 			value_type tmp = tlower;
-			tupper = tlower;
-			tlower = tmp;
+			tlower = tupper;
+			tupper = tmp;
 		}
 		int cnt = 0;
 		do{
@@ -257,7 +286,7 @@ public:
 			else{
 				tlower = tnew;
 			}
-		}while( tupper - tlower > 1.0e-12 && cnt < 100 );
+		}while( fabs(tupper - tlower) > 1.0e-12 && cnt < 100 );
 		return tlower;
 	}	
 

@@ -1,7 +1,7 @@
 all:
-	g++ -o test.o test.cpp
-	./test.o
+	g++ polynomial_test.cpp -otest -lboost_unit_test_framework -std=c++11
+	./test
 doc:
 	doxygen
 clean:
-	rm -rf test.o simulation.dat
+	rm -rf test
