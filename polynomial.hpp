@@ -397,6 +397,19 @@ public:
 		return sum;
 	}
 
+	state_type integrate( time_type t0, time_type t1 )
+	{
+		vector<state_type> d1 = derivs( 0 );
+		int N = d1.size();
+		d1.resize( N+1 );
+		for ( int i = N-1; i >= 0; i-- ){
+			d1[ i+1 ] = d1[i];
+		}
+		d1[0] = 0;
+		polynomial P2( 0, d1 );
+		return P2( t1 ) - P2( t0 );
+	}
+
 };
 
 template <class state_type, class time_type>
@@ -410,4 +423,17 @@ inline polynomial< state_type,
 	d1.resize( fmax( d1.size(), d2.size() ) );
 	d2.resize( fmax( d1.size(), d2.size() ) );
 	return polynomial<state_type,time_type>( 0, d1+d2 );
+}
+
+template <class state_type, class time_type>
+inline polynomial< state_type,
+				   time_type
+				   > operator-( polynomial<state_type,time_type> P1,
+								polynomial<state_type,time_type> P2 )
+{
+	vector<state_type> d1 = P1.derivs( 0 );
+	vector<state_type> d2 = P2.derivs( 0 );
+	d1.resize( fmax( d1.size(), d2.size() ) );
+	d2.resize( fmax( d1.size(), d2.size() ) );
+	return polynomial<state_type,time_type>( 0, d1-d2 );
 }

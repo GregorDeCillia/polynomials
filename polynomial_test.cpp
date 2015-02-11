@@ -137,11 +137,21 @@ BOOST_AUTO_TEST_CASE( test_hermite_interpolation )
 
 BOOST_AUTO_TEST_CASE( test_add )
 {
-	polynomial<> P1( {1,1,1,1}, {-6.1,2.21,0.243,5.3} );
+	polynomial<> P1( { 2, 12, 3, 213 }, {-6.1, 2.21, 0.243, 5.3} );
 	polynomial<> P2( {2,2.23,-5.23,8.34,-3.1},{7.2,4.32,3.16,-12.1,3.1} );
 	polynomial<> P3 = P1 + P2;
-	for ( int i = 0; i < t.size(); i++ )
+	polynomial<> P4 = P1 - P2;
+	for ( int i = 0; i < t.size(); i++ ){
 		BOOST_REQUIRE_CLOSE( P1(t[i]) + P2(t[i]), P3(t[i]), tolerance );
+		BOOST_REQUIRE_CLOSE( P1(t[i]) - P2(t[i]), P4(t[i]), tolerance );
+	}
+}
+
+BOOST_AUTO_TEST_CASE( integrate )
+{
+	// create P(t) = (t-1)*(t-1)
+	polynomial<> P( {0,1,2}, {1,0,1} );
+	BOOST_REQUIRE_CLOSE( P.integrate( 0, 2 ), 2.0/3.0, tolerance );
 }
 
 
