@@ -31,10 +31,13 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <h1>
-<a id="polynomials-to-interpolate-functions" class="anchor" href="#polynomials-to-interpolate-functions" aria-hidden="true"><span class="octicon octicon-link"></span></a>polynomials to interpolate functions</h1>
+        <p>This library should make it easy to construct and evaluate interpolation polynomials. for functions</p>
 
-<p>This library should make it easy to construct and evaluate interpolation polynomials. Currently supported:</p>
+<div class="highlight highlight-javascript"><pre>state_type f( time_type t );</pre></div>
+
+<p><code>time_type</code> is assumed to be one dimensional ( <code>double</code>, <code>float</code> ) and <code>state_type</code> can be any type supporting addition ad multiplication with <code>time_type</code> ( for example <code>double</code> or <code>boost::numeric::ublas::vector</code>).</p>
+
+<p>Currently supported functions are</p>
 
 <table>
 <thead>
@@ -87,20 +90,27 @@
 <li>* limited support for adding derivatives ( that is <code>tnew</code> already exists in <code>t_</code> )</li>
 </ul>
 
-<h2>
-<a id="plans" class="anchor" href="#plans" aria-hidden="true"><span class="octicon octicon-link"></span></a>plans</h2>
+<h3>
+<a id="plans" class="anchor" href="#plans" aria-hidden="true"><span class="octicon octicon-link"></span></a>plans</h3>
+
+<p>there are some missing features in the current implementation. Some major improvements developed right now are</p>
 
 <ul>
-<li>automatic sorting of input, so <code>t_[0] &lt;= t_[1] &lt;= ... &lt;= t_[p]</code>
+<li>automatic sorting of input, so that <code>t_[0] &lt;= t_[1] &lt;= ... &lt;= t_[p]</code>
 
 <ul>
-<li>in this case <code>add_point</code> will have to insert the new point at an appropriate spot</li>
-<li>this requires to store all finite differences.</li>
+<li>this requires <code>add_point</code> to insert the new point at an appropriate spot
+
+<ul>
+<li>tat in return requires to store all finite differences during construction</li>
 </ul>
 </li>
-<li>add spline class which stores all divided differences for dynamic order interpolation</li>
-<li>set default the identical function for <code>rootfn</code> if <code>state_type</code> can be compared to <code>0</code>. this way, a root
-of the polynomial is found</li>
+</ul>
+</li>
+<li>get an own class for polynomials in standard basis. This could be a derived class of polynomial supporting
+integration </li>
+<li>set the identical function as default for <code>rootfn</code> if <code>state_type == double</code>. this way, a root
+of the polynomial is found which should be a common usecase.</li>
 </ul>
       </section>
     </div>
